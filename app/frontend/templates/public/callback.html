@@ -1,0 +1,24 @@
+{% extends 'private/base.html' %}
+
+{% block main %}
+
+  <style>
+    main {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      width: 100%;
+    }
+  </style>
+
+  <p class="callback-message">{{message}}</p>
+
+  <script>
+    window.opener.location.reload();
+    setTimeout(() => {
+      window.close();
+    }, 3000);
+  </script>
+  
+{% endblock %}
