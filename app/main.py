@@ -375,13 +375,6 @@ def report_hackathon(hackathon_id):
 
     return jsonify({"status": "success", "message": "The hackathon has been reported successfully."})
 
-@app.route("/api/v1/user", methods=["GET"])
-def get_user():
-    if session.get("user") is None:
-        return jsonify({"status": "error", "message": "You need to be authenticated to perform this action."}), 401
-    
-    return jsonify({"status": "success", "message": "User is authenticated."})
-
 # Error Handlers
 
 @app.errorhandler(404)
@@ -395,6 +388,3 @@ def method_not_allowed(error):
 @app.errorhandler(500)
 def internal_server_error(error):
     return render_template("public/error.html", error_code=500, error_message="Oops! Something went wrong, please try again later.")
-
-if __name__ == "__main__":
-    app.run(debug=True)
