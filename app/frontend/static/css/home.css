@@ -281,3 +281,38 @@
 #report-hackathon-form textarea {
   height: 100px;
 }
+
+
+/* Mobile Styles */
+
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .search-container {
+    min-width: calc(100% - 150px);
+  }
+
+  .project-info-container p {
+    width: 100%;
+    font-size: .9rem;
+  }
+
+  .add-hackathon-container {
+    justify-content: flex-end;
+  }
+
+  .hackathon-metadata-container p, .hackathon-metadata-container a {
+    width: 100%;
+  }
+
+  .hackathon-metadata-container p, .hackathon-metadata-container a {
+    width: 100%;
+  }
+
+  .modal-container {
+    max-width: 100%;
+  }
+}

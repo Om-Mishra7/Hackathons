@@ -236,6 +236,10 @@ function editHackathon(hackathonId) {
     }
   }
 
+  if (document.getElementById('edit-hackathon-error-message').innerText !== '') {
+    return;
+  }
+
   fetch(`/api/v1/hackathons/${hackathonId}`)
     .then(response => response.json())
     .then(data => {
