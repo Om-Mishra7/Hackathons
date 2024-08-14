@@ -86,7 +86,7 @@ def search_hackathons():
     if not search_query:
         return get_hackathons(bson=True)
 
-    records = sorted(list(client["hackathons"].find({"hackathon_name": {"$regex": search_query, "$options": "i"}}, {}).limit(5)), key=lambda hackathon: hackathon["hackathon_name"].lower())
+    records = sorted(list(client["hackathons"].find({"hackathon_name": {"$regex": search_query, "$options": "i"}}, {})), key=lambda hackathon: hackathon["hackathon_name"].lower())
     for record in records:
         record["_id"] = str(record["_id"])
     return records
