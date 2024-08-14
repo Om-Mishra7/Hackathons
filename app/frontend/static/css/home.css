@@ -291,6 +291,10 @@
     gap: 10px;
   }
 
+  #github-link {
+    display: none;
+  }
+
   .search-container {
     min-width: calc(100% - 150px);
   }
