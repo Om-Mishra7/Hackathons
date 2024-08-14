@@ -319,4 +319,8 @@
   .modal-container {
     max-width: 100%;
   }
+
+  p,a {
+    word-wrap: break-word;
+  }
 }
