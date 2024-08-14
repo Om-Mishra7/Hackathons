@@ -1,0 +1,26 @@
+<table style="width: 100%;border-collapse: collapse;">
+  <tr>
+    <th style="border: 1px solid #dddddd;text-align: left;padding: 8px;">Hackathon Name</th>
+    <th style="border: 1px solid #dddddd;text-align: left;padding: 8px;">Organizing Body</th>
+    <th style="border: 1px solid #dddddd;text-align: left;padding: 8px;">Last Iteration Date</th>
+    <th style="border: 1px solid #dddddd;text-align: left;padding: 8px;">Last Iteration Location</th>
+    <th style="border: 1px solid #dddddd;text-align: left;padding: 8px;">Last Prize Pool</th>
+    <th style="border: 1px solid #dddddd;text-align: left;padding: 8px;">Website Link</th>
+  </tr>
+  
+  {% for hackathon in hackathons %}
+  <tr>
+    <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;">{{ hackathon.hackathon_name }}</td>
+    <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;">{{ hackathon.organizing_body_name }}</td>
+    <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;">{{ hackathon.last_iteration_date }}</td>
+    <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;">{{ hackathon.last_iteration_location }}</td>
+    <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;">{{ hackathon.last_prize_pool }}</td>
+    <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;"><a href="{{ hackathon.website_link }}" target="_blank">Visit Website</a></td>
+  </tr>
+  {% endfor %}
+
+</table>
+
+<footer>
+  <p>If you know of any hackathons that are not listed here, please feel free to contribute to this project by adding the hackathon to the list. You can do so by visiting the following link: <a href="https://hackathons.om-mishra.com/ " target="_blank">https://hackathons.om-mishra.com/</a></p>
+</footer>

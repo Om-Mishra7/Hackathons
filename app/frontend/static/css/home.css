@@ -83,6 +83,7 @@
 
 .hackathons-container {
   margin-top: 20px;
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -139,4 +140,144 @@
 .hackathon-actions-container a svg {
   width: 20px;
   cursor: pointer;
+}
+
+.modals-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  backdrop-filter: blur(5px);
+  padding: 20px;
+  display: none;
+}
+
+.open-modals-container {
+  display: flex;
+}
+
+.modal-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  background-color: #1E1E1E;
+  border: 1px solid #2F2F2F;
+  border-radius: 5px;
+  position: relative;
+  max-width: 400px;
+  width: 100%;
+  overflow-y: auto;
+  display: none;
+}
+
+.open-modal-container {
+  display: flex;
+}
+
+.modal-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: transparent;
+}
+
+.modal-header h2 {
+  font-size: 1.5rem;
+  background-color: transparent;
+}
+
+.modal-header svg {
+  width: 20px;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+.modal-body {
+  background-color: transparent;
+}
+
+.error-message-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: transparent;
+  margin-bottom: 20px;  
+}
+
+.error-message-container p {
+  font-size: .9rem;
+  color: #FF0000;
+  background-color: transparent;
+}
+
+.error-message-container p a {
+  color: #FF0000;
+  background-color: transparent;
+}
+
+.modal-body form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background-color: transparent;
+}
+
+.modal-body form label {
+  font-size: .9rem;
+  background-color: transparent;
+}
+
+.modal-body form input, .modal-body form textarea {
+  background-color: transparent;
+  border: 1px solid #2F2F2F;
+  border-radius: 5px;
+  padding: 10px 10px;
+  color: #FFF;
+  margin-bottom: 10px;
+}
+
+.modal-body form input::placeholder, .modal-body form textarea::placeholder {
+  color: #FFF;
+}
+
+.modal-body form input:focus, .modal-body form textarea:focus {
+  outline: none;
+}
+
+.modal-body form button {
+  background-color: #000000;
+  border: 1px solid #2F2F2F;
+  border-radius: 5px;
+  padding: 10px;
+  color: #FFF;
+  cursor: pointer;
+}
+
+#report-hackathon-form label {
+  font-size: .9rem;
+}
+
+#report-hackathon-form select {
+  background-color: transparent;
+  border: 1px solid #2F2F2F;
+  border-radius: 5px;
+  padding: 10px 10px;
+  color: #FFF;
+  margin-bottom: 20px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='20px' viewBox='0 -960 960 960' width='20px' fill='%23e8eaed'%3E%3Cpath d='M480-360 280-560h400L480-360Z'/%3E%3C/svg%3E") no-repeat;
+  background-position: calc(100% - 0.75rem) center !important;
+  -moz-appearance:none !important;
+  -webkit-appearance: none !important; 
+  appearance: none !important;
+}
+
+#report-hackathon-form textarea {
+  height: 100px;
 }
