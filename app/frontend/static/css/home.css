@@ -283,7 +283,7 @@
 }
 
 .logout-link-mobile {
-  display: none;
+  display: none !important;
 }
 
 
@@ -300,7 +300,7 @@
   }
 
   .logout-link {
-    display: none;
+    display: none !important;
   }
 
   .search-container {
