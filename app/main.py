@@ -244,7 +244,7 @@ def edit_hackathon(hackathon_id):
     if not hackathon_name or not organizing_body_name or not last_iteration_date or not last_iteration_location or not last_prize_pool or not website_link:
         return jsonify({"status": "error", "message": f"Please, fill the following fields: {'Hackathon Name' if not hackathon_name else ''} {'Organizing Body Name' if not organizing_body_name else ''} {'Last Iteration Date' if not last_iteration_date else ''} {'Last Iteration Location' if not last_iteration_location else ''} {'Last Prize Pool' if not last_prize_pool else ''} {'Website Link' if not website_link else ''} to submit the form."}), 400
     try:
-        if requests.get(website_link, timeout=10).status_code != 200:
+        if requests.get(website_link, timeout=10, verify=False).status_code != 200:
             return jsonify({"status": "error", "message": "The website link provided is inaccessible or does not exist."}), 400
     except:
         return jsonify({"status": "error", "message": "The website link provided is inaccessible or does not exist."}), 400
@@ -311,7 +311,7 @@ def add_hackathon():
         return jsonify({"status": "error", "message": f"Please, fill the following fields: {'Hackathon Name' if not hackathon_name else ''} {'Organizing Body Name' if not organizing_body_name else ''} {'Last Iteration Date' if not last_iteration_date else ''} {'Last Iteration Location' if not last_iteration_location else ''} {'Last Prize Pool' if not last_prize_pool else ''} {'Website Link' if not website_link else ''} to submit the form."}), 400
     
     try:
-        if requests.get(website_link, timeout=10).status_code != 200:
+        if requests.get(website_link, timeout=10, verify=False).status_code != 200:
             return jsonify({"status": "error", "message": "The website link provided is inaccessible or does not exist."}), 400
     except:
         return jsonify({"status": "error", "message": "The website link provided is inaccessible or does not exist."}), 400
