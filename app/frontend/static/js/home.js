@@ -149,6 +149,7 @@ function closeModal(modalId) {
 
 
 function addHackathon() {
+  document.getElementById('add-hackathon-error-message').innerText = '';
   if (document.getElementById('modals-container')) {
       isModalsContainerOpen = document.getElementById('modals-container').classList.contains('open-modals-container');
       if (isModalsContainerOpen) {
@@ -221,6 +222,7 @@ function addHackathonFormSubmit(event) {
 }
 
 function editHackathon(hackathonId) {
+    document.getElementById('edit-hackathon-error-message').innerText = '';
   if (document.getElementById('modals-container')) {
       isModalsContainerOpen = document.getElementById('modals-container').classList.contains('open-modals-container');
       if (isModalsContainerOpen) {
@@ -304,6 +306,7 @@ function editHackathonFormSubmit(event) {
                   closeModal('edit-hackathon-modal');
               }, 2000);
               document.getElementById('edit-hackathon-error-message').style.color = '#FF0000';
+              window.location.reload();
           } else {
               document.getElementById('edit-hackathon-error-message').innerText = data.message;
               document.getElementById('edit-hackathon-error-message-container').style.display = 'block';
@@ -316,6 +319,7 @@ function editHackathonFormSubmit(event) {
 }
 
 function reportHackathon(hackathonId) {
+  document.getElementById('report-hackathon-error-message').innerText = '';
   if (document.getElementById('modals-container')) {
       isModalsContainerOpen = document.getElementById('modals-container').classList.contains('open-modals-container');
       if (isModalsContainerOpen) {
