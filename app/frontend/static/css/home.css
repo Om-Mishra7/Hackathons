@@ -282,6 +282,10 @@
   height: 100px;
 }
 
+.logout-link-mobile {
+  display: none;
+}
+
 
 /* Mobile Styles */
 
@@ -292,6 +296,10 @@
   }
 
   #github-link {
+    display: none;
+  }
+
+  .logout-link {
     display: none;
   }
 
