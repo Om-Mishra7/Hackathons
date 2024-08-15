@@ -299,6 +299,10 @@
     display: none;
   }
 
+  .logout-link-mobile {
+    display: flex !important;
+  }
+
   .logout-link {
     display: none !important;
   }
