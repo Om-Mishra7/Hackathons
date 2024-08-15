@@ -209,6 +209,7 @@ function addHackathonFormSubmit(event) {
                   closeModal('add-hackathon-modal');
               }, 2000);
               document.getElementById('add-hackathon-error-message').style.color = '#FF0000';
+              window.location.reload();
           } else {
               document.getElementById('add-hackathon-error-message').innerText = data.message;
               document.getElementById('add-hackathon-error-message-container').style.display = 'block';
