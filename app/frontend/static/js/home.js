@@ -205,6 +205,7 @@ function addHackathonFormSubmit(event) {
           if (data.status === 'success') {
               document.getElementById('add-hackathon-error-message').style.color = 'green';
               document.getElementById('add-hackathon-error-message').innerText = data.message;
+              document.getElementById('add-hackathon-error-message-container').style.display = 'block';
               setTimeout(() => {
                   closeModal('add-hackathon-modal');
                   window.location.reload();
@@ -302,10 +303,11 @@ function editHackathonFormSubmit(event) {
           if (data.status === 'success') {
               document.getElementById('edit-hackathon-error-message').style.color = 'green';
               document.getElementById('edit-hackathon-error-message').innerText = data.message;
+              document.getElementById('edit-hackathon-error-message-container').style.display = 'block';
               setTimeout(() => {
                   closeModal('edit-hackathon-modal');
                   window.location.reload();
-              }, 2000);
+              }, 5000);
           } else {
               document.getElementById('edit-hackathon-error-message').innerText = data.message;
               document.getElementById('edit-hackathon-error-message-container').style.display = 'block';
@@ -369,10 +371,11 @@ function reportHackathonFormSubmit(event) {
           if (data.status === 'success') {
               document.getElementById('report-hackathon-error-message').style.color = 'green';
               document.getElementById('report-hackathon-error-message').innerText = data.message;
+              document.getElementById('report-hackathon-error-message-container').style.display = 'block';
               setTimeout(() => {
                   closeModal('report-hackathon-modal');
+                  document.getElementById('report-hackathon-error-message').style.color = '#FF0000';
               }, 2000);
-              document.getElementById('report-hackathon-error-message').style.color = '#FF0000';
           } else {
               document.getElementById('report-hackathon-error-message').innerText = data.message;
               document.getElementById('report-hackathon-error-message-container').style.display = 'block';
