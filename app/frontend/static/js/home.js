@@ -207,9 +207,8 @@ function addHackathonFormSubmit(event) {
               document.getElementById('add-hackathon-error-message').innerText = data.message;
               setTimeout(() => {
                   closeModal('add-hackathon-modal');
+                  window.location.reload();
               }, 2000);
-              document.getElementById('add-hackathon-error-message').style.color = '#FF0000';
-              window.location.reload();
           } else {
               document.getElementById('add-hackathon-error-message').innerText = data.message;
               document.getElementById('add-hackathon-error-message-container').style.display = 'block';
@@ -305,9 +304,8 @@ function editHackathonFormSubmit(event) {
               document.getElementById('edit-hackathon-error-message').innerText = data.message;
               setTimeout(() => {
                   closeModal('edit-hackathon-modal');
+                  window.location.reload();
               }, 2000);
-              document.getElementById('edit-hackathon-error-message').style.color = '#FF0000';
-              window.location.reload();
           } else {
               document.getElementById('edit-hackathon-error-message').innerText = data.message;
               document.getElementById('edit-hackathon-error-message-container').style.display = 'block';
