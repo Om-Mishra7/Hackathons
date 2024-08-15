@@ -259,6 +259,11 @@ def edit_hackathon(hackathon_id):
     if last_prize_pool.isdigit() == False:
         return jsonify({"status": "error", "message": "The prize pool must be a valid number, without any currency symbols."}), 400
 
+    hackathon = client["hackathons"].find_one({"_id": ObjectId(hackathon_id)})
+
+    if hackathon["hackathon_name"] == hackathon_name and hackathon["organizing_body_name"] == organizing_body_name and hackathon["last_iteration_date"] == last_iteration_date and hackathon["last_iteration_location"] == last_iteration_location and hackathon["last_prize_pool"] == f"₹{last_prize_pool}" and hackathon["website_link"] == website_link:
+        return jsonify({"status": "error", "message": "The hackathon information has not been changed, please update the information and try again."}), 400
+
     hackathon = client["hackathons"].find_one_and_update({"_id": ObjectId(hackathon_id)}, {
         "$set": {
             "hackathon_name": hackathon_name,
@@ -289,7 +294,7 @@ def edit_hackathon(hackathon_id):
     if not hackathon:
         return jsonify({"status": "error", "message": "No hackathon found with the provided ID, the hackathon may have been deleted or please check the ID and try again."}), 404
     
-    return jsonify({"status": "success", "hackathon_id": str(hackathon_id)})
+    return jsonify({"status": "success", "hackathon_id": str(hackathon_id), "message": "The hackathon information has been updated successfully, check the history for more details."})
 
 @app.route("/api/v1/hackathons", methods=["POST"])
 def add_hackathon():
@@ -344,7 +349,7 @@ def add_hackathon():
     }).inserted_id
 
 
-    return jsonify({"status": "success", "hackathon_id": str(hackathon_id)})
+    return jsonify({"status": "success", "hackathon_id": str(hackathon_id), "message": "The hackathon has been added successfully, check the history for more details."})
 
 @app.route("/api/v1/hackathons/<hackathon_id>/report", methods=["POST"])
 def report_hackathon(hackathon_id):
@@ -373,7 +378,7 @@ def report_hackathon(hackathon_id):
         }
     })
 
-    return jsonify({"status": "success", "message": "The hackathon has been reported successfully."})
+    return jsonify({"status": "success", "message": "The hackathon has been reported successfully, the moderation team will review the report."})
 
 # Error Handlers
 
