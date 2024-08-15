@@ -308,7 +308,7 @@
   }
 
   .search-container {
-    min-width: calc(100% - 150px);
+    min-width: calc(100% - 250px);
   }
 
   .project-info-container p {
