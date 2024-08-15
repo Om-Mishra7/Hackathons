@@ -307,7 +307,7 @@ function editHackathonFormSubmit(event) {
               setTimeout(() => {
                   closeModal('edit-hackathon-modal');
                   window.location.reload();
-              }, 5000);
+              }, 2000);
           } else {
               document.getElementById('edit-hackathon-error-message').innerText = data.message;
               document.getElementById('edit-hackathon-error-message-container').style.display = 'block';
