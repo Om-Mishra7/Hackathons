@@ -396,3 +396,7 @@ def method_not_allowed(error):
 @app.errorhandler(500)
 def internal_server_error(error):
     return render_template("public/error.html", error_code=500, error_message="Oops! Something went wrong, please try again later.")
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
