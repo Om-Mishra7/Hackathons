@@ -225,7 +225,6 @@ function addHackathonFormSubmit(event) {
 }
 
 function editHackathon(hackathonId) {
-    console.log(document.getElementById('edit-hackathon-error-message').innerText);
     if (document.getElementById('edit-hackathon-error-message').innerText !== `Please, authenticate yourself by logging in here, before editing a hackathon.This helps us in maintaining the integrity of the data, as well as in attributing the hackathon to the right person.`) {
         document.getElementById('edit-hackathon-error-message').innerText = '';
     };
