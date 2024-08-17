@@ -149,6 +149,9 @@ function closeModal(modalId) {
 
 
 function addHackathon() {
+    if (document.getElementById('add-hackathon-error-message').innerText == `Please, authenticate yourself by logging in <a href="/auth/login" onclick="window.open('/auth/login', 'newwindow', 'width=600, height=600'); return false;">here</a>, before adding a hackathon.<br><br>This helps us in maintaining the integrity of the data, as well as in attributing the hackathon to the right person.`) {
+        return;
+    }
   document.getElementById('add-hackathon-error-message').innerText = '';
   if (document.getElementById('modals-container')) {
       isModalsContainerOpen = document.getElementById('modals-container').classList.contains('open-modals-container');
@@ -223,6 +226,9 @@ function addHackathonFormSubmit(event) {
 }
 
 function editHackathon(hackathonId) {
+    if (document.getElementById('edit-hackathon-error-message').innerText == `Please, authenticate yourself by logging in <a href="/auth/login" onclick="window.open('/auth/login', 'newwindow', 'width=600, height=600'); return false;">here</a>, before editing a hackathon.<br><br>This helps us in maintaining the integrity of the data, as well as in attributing the hackathon to the right person.`) {
+        return;
+    };
     document.getElementById('edit-hackathon-error-message').innerText = '';
   if (document.getElementById('modals-container')) {
       isModalsContainerOpen = document.getElementById('modals-container').classList.contains('open-modals-container');
@@ -320,6 +326,9 @@ function editHackathonFormSubmit(event) {
 }
 
 function reportHackathon(hackathonId) {
+    if (document.getElementById('report-hackathon-error-message').innerText == `Please, authenticate yourself by logging in <a href="/auth/login" onclick="window.open('/auth/login', 'newwindow', 'width=600, height=600'); return false;">here</a>, before reporting a hackathon.<br><br>This helps us in preventing misuse of the reporting feature.`) {
+        return;
+    }
   document.getElementById('report-hackathon-error-message').innerText = '';
   if (document.getElementById('modals-container')) {
       isModalsContainerOpen = document.getElementById('modals-container').classList.contains('open-modals-container');
