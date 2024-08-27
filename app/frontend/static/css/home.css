@@ -264,7 +264,7 @@
   font-size: .9rem;
 }
 
-#report-hackathon-form select {
+.modal-body form select {
   background-color: transparent;
   border: 1px solid #2F2F2F;
   border-radius: 5px;
@@ -280,6 +280,12 @@
 
 #report-hackathon-form textarea {
   height: 100px;
+}
+
+.label-description {
+  font-size: .7rem;
+  background-color: transparent;
+  margin-bottom: 5px;
 }
 
 .logout-link-mobile {

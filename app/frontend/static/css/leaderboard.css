@@ -1,0 +1,144 @@
+.leaderboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.time-period {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.time-period a {
+    text-decoration: none;
+    font-size: 0.8rem;
+    padding: 5px 10px;
+}
+
+.time-period a.active {
+    background-color: #1E1E1E;
+    border: 1px solid #2F2F2F;
+    border-radius: 5px;
+}
+
+.leaderboard {
+    width: 80%;
+    margin-top: 20px;
+    border-bottom: 0;
+    overflow-x: auto; /* Allows horizontal scrolling on small screens */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #5F5F5F;
+}
+
+thead {
+    background-color: #1E1E1E;
+    color: #fff;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+th {
+    font-weight: bold;
+    border-bottom: 2px solid #5F5F5F;
+}
+
+tr {
+    border-bottom: 1px solid #5F5F5F;
+}
+
+td {
+    padding: 10px;
+}
+
+tbody tr:hover {
+    background-color: #2E2E2E;
+}
+
+tbody tr td img {
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+}
+
+tbody tr td a {
+    text-decoration: none;
+    color: #1E90FF;
+}
+
+tbody tr td a:hover {
+    text-decoration: underline;
+}
+
+.flex-td {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.flex-td a {
+    white-space: nowrap;
+    word-break: break-word;
+}
+
+.className {
+    white-space: nowrap;
+    word-break: break-word;
+}
+
+@media (max-width: 768px) {
+    .leaderboard {
+        width: 100%;
+    }
+
+    th, td {
+        padding: 10px 5px;
+    }
+
+    .flex-td {
+        flex-direction: row;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .flex-td a {
+        white-space: normal;
+    }
+
+    td {
+        padding: 5px;
+        width: max-content;
+    }
+
+    .time-period {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .time-period a {
+        margin: 5px;
+    }
+
+    .time-period a.active {
+        margin: 5px;
+    }
+    
+    table {
+        font-size: 0.8rem; /* Slightly smaller font size on mobile */
+    }
+
+    .mobileHidden {
+        display: none;
+    }
+}

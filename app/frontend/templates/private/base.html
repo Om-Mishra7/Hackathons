@@ -11,7 +11,198 @@
 </head>
 <body>
     <main>
-    {% block main %}{% endblock %}
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+        <script src="{{ url_for('static', filename='js/home.js') }}" defer></script>
+        <div class="modals-container" id="modals-container">
+            <modal class="modal-container" id="add-hackathon-modal">
+                <div class="modal-header">
+                    <h2>Add Hackathon</h2>
+                    <svg onclick="closeModal('add-hackathon-modal')" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                </div>
+                <div class="modal-body">
+                    {% if session.logged_in %}
+                    <div class="error-message-container" id="add-hackathon-error-message-container">
+                        <p class="error-message" id="add-hackathon-error-message"></p>
+                    </div>
+                    <form id="add-hackathon-form" onsubmit="addHackathonFormSubmit(event)">
+                        <label for="hackathon-name">Hackathon Name</label>
+                        <input type="text" id="hackathon-name" name="hackathon-name" required>
+                        <label for="organizing-body-name">Organizing Body Name</label>
+                        <input type="text" id="organizing-body-name" name="organizing-body-name" required>
+                        <label for="last-iteration-date">Last Iteration Date</label>
+                        <input type="date" id="last-iteration-date" name="last-iteration-date" required>
+                        <label for="last-iteration-location">Last Iteration Location</label>
+                        <input type="text" id="last-iteration-location" name="last-iteration-location" required>
+                        <label for="last-prize-pool">Last Prize Pool (in INR)</label>
+                        <input type="number" id="last-prize-pool" name="last-prize-pool" required>
+                        <label for="website-link">Website Link</label>
+                        <input type="text" id="website-link" name="website-link" required>
+                        <button type="submit">Add Hackathon</button>
+                    </form>
+                    {% else %}
+                    <div class="error-message-container" id="add-hackathon-error-message-container">
+                        <p class="error-message" id="add-hackathon-error-message">Please, authenticate yourself by logging in <a href="/auth/login" onclick="window.open('/auth/login', 'newwindow', 'width=600, height=600'); return false;">here</a>, before adding a hackathon.<br><br>This helps us in maintaining the integrity of the data, as well as in attributing the hackathon to the right person.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </modal>
+            <modal class="modal-container" id="edit-hackathon-modal">
+                <div class="modal-header">
+                    <h2>Edit Hackathon</h2>
+                    <svg onclick="closeModal('edit-hackathon-modal')" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                </div>
+                <div class="modal-body">
+                    {% if session.logged_in %}
+                    <div class="error-message-container" id="edit-hackathon-error-message-container">
+                        <p class="error-message" id="edit-hackathon-error-message"></p>
+                    </div>
+                    <form id="edit-hackathon-form" onsubmit="editHackathonFormSubmit(event)">
+                        <label for="edit-hackathon-name">Hackathon Name</label>
+                        <input type="text" id="edit-hackathon-name" name="edit-hackathon-name" required>
+                        <label for="edit-organizing-body-name">Organizing Body Name</label>
+                        <input type="text" id="edit-organizing-body-name" name="edit-organizing-body-name" required>
+                        <label for="edit-last-iteration-date">Last Iteration Date</label>
+                        <input type="date" id="edit-last-iteration-date" name="edit-last-iteration-date" required>
+                        <label for="edit-last-iteration-location">Last Iteration Location</label>
+                        <input type="text" id="edit-last-iteration-location" name="edit-last-iteration-location" required>
+                        <label for="edit-last-prize-pool">Last Prize Pool (in INR)</label>
+                        <input type="number" id="edit-last-prize-pool" name="edit-last-prize-pool" required>
+                        <label for="edit-website-link">Website Link</label>
+                        <input type="text" id="edit-website-link" name="edit-website-link" required>
+                        <input type="hidden" id="edit-hackathon-id" name="edit-hackathon-id">
+                        <button type="submit">Edit Hackathon</button>
+                    </form>
+                    {% else %}
+                    <div class="error-message-container" id="edit-hackathon-error-message-container">
+                        <p class="error-message" id="edit-hackathon-error-message">Please, authenticate yourself by logging in <a href="/auth/login" onclick="window.open('/auth/login', 'newwindow', 'width=600, height=600'); return false;">here</a>, before editing a hackathon.<br><br>This helps us in maintaining the integrity of the data, as well as in attributing the hackathon to the right person.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </modal>
+            <modal class="modal-container" id="report-hackathon-modal">
+                <div class="modal-header">
+                    <h2>Report Hackathon</h2>
+                    <svg onclick="closeModal('report-hackathon-modal')" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                </div>
+                <div class="modal-body">
+                    {% if session.logged_in %}
+                    <div class="error-message-container" id="report-hackathon-error-message-container">
+                        <p class="error-message" id="report-hackathon-error-message"></p>
+                    </div>
+                    <form id="report-hackathon-form" onsubmit="reportHackathonFormSubmit(event)">
+                        <label for="report-reason">Reason</label>
+                        <select id="report-reason" name="report-reason" required>
+                            <option value="spam">Spam</option>
+                            <option value="duplicate">Duplicate</option>
+                            <option value="inaccurate">Inaccurate</option>
+                            <option value="inappropriate">Inappropriate</option>
+                            <option value="not-hackathon">Not a hackathon</option>
+                            <option value="other">Other</option>
+                        </select>   
+                        <label for="report-description">Description</label>
+                        <textarea id="report-description" name="report-description" required></textarea>
+                        <input type="hidden" id="report-hackathon-id" name="reporting-hackathon-id">
+                        <button type="submit">Report Hackathon</button>
+                    </form>
+                    {% else %}
+                    <div class="error-message-container" id="report-hackathon-error-message-container">
+                        <p class="error-message" id="report-hackathon-error-message">Please, authenticate yourself by logging in <a href="/auth/login" onclick="window.open('/auth/login', 'newwindow', 'width=600, height=600'); return false;">here</a>, before reporting a hackathon.<br><br>This helps us in preventing misuse of the reporting feature.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </modal>
+            <modal class="modal-container" id="complete-profile-modal">
+                <div class="modal-header">
+                    <h2>Complete Profile</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="error-message-container" id="complete-profile-error-message-container">
+                        <p class="error-message" id="complete-profile-error-message"></p>
+                    </div>
+                    <form id="complete-profile-form" onsubmit="completeProfileFormSubmit(event)">
+                        <label for="complete-profile-name">Student Name</label>
+                        <input type="text" id="complete-profile-name" name="complete-profile-name" required>
+                        <label for="complete-profile-college">Email Address</label>
+                        <input type="email" id="complete-profile-email" name="complete-profile-email" required>
+                        <label for="complete-university_id">University Roll Number</label>
+                        <input type="text" id="complete-university_id" name="complete-university_id" required>
+                        
+                        <button type="submit">Complete Profile</button>
+                    </form>
+                </div>
+            </modal>
+            <modal class="modal-container" id="add-participation-modal">
+                <div class="modal-header">
+                    <h2>Add Participation</h2>
+                    <svg onclick="closeModal('add-participation-modal')" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                </div>
+                <div class="modal-body">
+                    {% if session.logged_in %}
+                    <div class="error-message-container" id="add-participation-error-message-container">
+                        <p class="error-message" id="add-participation-error-message"></p>
+                    </div>
+                    <form id="add-participation-form" onsubmit="addParticipationFormSubmit(event)">
+                        <label for="participation-hackathon-id">Hackathon Name</label>
+                        <p class="label-description">In case the hackathon you participated in is not listed, please add it <a href="#" onclick="closeModal('add-participation-modal'); addHackathon(); return false;">here</a>.</p>
+                        <select id="participation-hackathon-id" name="participation-hackathon-id" required>
+                            <option value="" disabled selected>Select a hackathon</option>
+                            {% for hackathon in hackathons %}
+                            <option value="{{ hackathon._id }}">{{ hackathon.hackathon_name }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="participation-position">Position Secured</label>
+                        <select id="participation-position" name="participation-position" required>
+                            <option value="" disabled selected>Select a position</option>
+                            <option value="1">1st</option>
+                            <option value="2">2nd</option>
+                            <option value="3">3rd</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <label for="participation-cost">Cost of Participation (Individual)</label>
+                        <p class="label-description">Please enter the cost of participation for an individual in the hackathon. If the hackathon was free, please enter 0, otherwise the cost in INR divided by the number of team members.</p>
+                        <input type="number" id="participation-cost" name="participation-cost" required>
+                        <label for="participation-certificate">Certificate</label>
+                        <p class="label-description">Please upload a certificate of participation in the hackathon. This can be a screenshot of the certificate, or a PDF of the certificate.</p>
+                        <input type="file" id="participation-certificate" name="participation-certificate" required accept=".png, .jpg, .jpeg, .pdf">
+                        <button type="submit">Add Participation</button>
+                    </form>
+                    {% else %}
+                    <div class="error-message-container" id="add-participation-error-message-container">
+                        <p class="error-message" id="add-participation-error-message">Please, authenticate yourself by logging in <a href="/auth/login" onclick="window.open('/auth/login', 'newwindow', 'width=600, height=600'); return false;">here</a>, before adding a participation.<br><br>This helps us in maintaining the integrity of the data, as well as in attributing the participation to the right person.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </modal>
+                    
+        </div>
+        <div class="header-container">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search for hackathons [/]" oninput="searchHackathons(this.value)" id="search-input">
+                <svg onclick="searchHackathons(document.getElementById('search-input').value)" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg>
+            </div>
+            <a href="https://github.com/Om-Mishra7/Hackathons" target="_blank" class="github-link" id="github-link">GitHub</a>
+            {% if session.logged_in %}
+            <a href="/auth/logout" class="logout-link">Logout({{ session.user.account_information.login }})</a>
+            <a href="/auth/logout" class="logout-link-mobile">Logout</a>
+            {% else %}
+            <a href="/auth/login" class="login-link" onclick="window.open('/auth/login', 'newwindow', 'width=600, height=600'); return false;">Login</a>
+            {% endif %}
+
+        </div>
+        <div class="project-info-container">
+            <p class="contribute">
+                If you know of any hackathons that are not listed here, please feel free to contribute to this project by clicking on the "Add Hackathon" button below. K.R. Mangalam University students can also log their participation in hackathons after they have completed them, ensuring their achievements are reflected in the leaderboard.
+            </p>
+        </div>        
+        <div class="add-hackathon-container">
+            <a class="add-hackathon" onclick="addHackathon()"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>Hackathon</a>
+            <a class="add-participation" onclick="addParticipation()"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>Participation</a>
+        </div>
+
+        {% block main %}
+        {% endblock %}
+        
     </main>
     
 </body>

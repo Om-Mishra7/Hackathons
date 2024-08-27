@@ -1,9 +1,9 @@
 import os
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import requests
-from flask import Flask, redirect, request, render_template, session, jsonify
+from flask import Flask, redirect, request, render_template, session, jsonify, url_for
 from pymongo import MongoClient
 from bson import ObjectId
 
@@ -43,12 +43,69 @@ def login_user(code):
 
     user_information = requests.get(f'https://api.github.com/user', headers={"Authorization": f'token {access_token}'}).json()
 
-    client["users"].find_one_and_update({"user_id": user_information["id"]}, {"$set": {"last_login": datetime.now(), "account_information": user_information}, "$setOnInsert": {"user_id": user_information["id"], "account_created": datetime.now(), "is_blocked": False, "account_type": "user"}}, upsert=True)
+    client["users"].find_one_and_update({"user_id": user_information["id"]}, {"$set": {"last_login": datetime.now(), "account_information.login": user_information["login"], "account_information.avatar_url": user_information["avatar_url"], "account_information.name": user_information["name"]}, "$setOnInsert": {"user_id": user_information["id"], "account_created": datetime.now(), "is_blocked": False, "account_type": "user", "profile_complete": False, "student_information": {"student_email": None, "student_name": None, "student_university_id": None}}}, upsert=True)
 
     if client["users"].find_one({"user_id": user_information["id"]})["is_blocked"]:
         return ("error", "The user account has been blocked, due to a violation of the terms of service.")
     
     return ("success", client["users"].find_one({"user_id": user_information["id"]}, {"_id": 0}))
+
+def calculate_points(position, hackathon_id):
+
+    total_points = 0
+
+    hackathon = client["hackathons"].find_one({"_id": ObjectId(hackathon_id)})
+
+    total_points += 50 # Base points for participation
+
+    if position == "1":
+        total_points += 100
+    elif position == "2":
+        total_points += 75
+    elif position == "3":
+        total_points += 50
+    else:
+        total_points += 25
+
+    return total_points
+
+def calculate_leaderboard(time_period="all_time"):
+
+    leaderboard = []
+
+    users = list(client["users"].find({"profile_complete": True}, {"_id": 0, "user_id": 1, "account_information": 1, "student_information": 1}))
+
+    for user in users:
+
+        user["points"] = 0
+        user["participations"] = 0
+
+        participations = list(client["participations"].find({"user_id": user["user_id"], "participation_metadata.participation_date": {"$gte": datetime.now() - timedelta(days=30) if time_period == "last_month" else datetime.now() - timedelta(days=365) if time_period == "last_year" else datetime(1970, 1, 1)}}, {"_id": 0}))
+        for participation in participations:
+            user["points"] += participation["points_awarded"]
+            user["participations"] += 1
+
+        leaderboard.append(user)
+
+    leaderboard = sorted(leaderboard, key=lambda user: user["points"], reverse=True)
+
+    return leaderboard    
+
+# Middleware
+
+@app.before_request
+def before_request():
+    if request.path.startswith("/static") or request.path.startswith("/auth") or request.path.startswith("/api/v1/users/profile"):
+        return
+    if not session.get("logged_in"):
+        return
+    if client["users"].find_one({"user_id": session["user"]["user_id"], "profile_complete": True}) is not None:
+        return
+    if request.args.get("authState") == "profile":
+        return
+    if request.path.startswith("/api"):
+        return jsonify({"status": "error", "message": "The user profile is incomplete, please reload the page and complete your profile to perform this action."}), 403
+    return redirect(url_for("home", authState="profile"))
 
 # Template Filters
 
@@ -64,7 +121,11 @@ def index():
 
 @app.route("/home", methods=["GET"])
 def home():
-    return render_template("public/home.html", hackathons=get_hackathons(bson=True))
+    return render_template("public/leaderboard.html", time_period=request.args.get("time_period", "all_time"), hackathons=get_hackathons(bson=True), leaderboard=calculate_leaderboard(request.args.get("time_period", "all_time")))
+
+@app.route("/hackathons", methods=["GET"])
+def hackathons():
+    return render_template("public/hackathons.html", hackathons=get_hackathons(bson=True))
 
 @app.route("/export", methods=["GET"])
 def export():
@@ -383,6 +444,95 @@ def report_hackathon(hackathon_id):
 
     return jsonify({"status": "success", "message": "The hackathon has been reported successfully, the moderation team will review the report."})
 
+@app.route("/api/v1/users/profile", methods=["POST"])
+def complete_profile():
+    student_name = request.json.get("student_name")
+    student_email = request.json.get("student_email")
+    university_id = request.json.get("university_id")
+
+    if not student_name or not student_email or not university_id:
+        return jsonify({"status": "error", "message": f"Please, fill the following fields: {'Student Name' if not student_name else ''} {'Email Address' if not student_email else ''} {'University Roll Number' if not university_id else ''} to submit the form."}), 400
+    
+    if "@" not in student_email:
+        return jsonify({"status": "error", "message": "The email address provided is invalid, please check the email address and try again."}), 400
+    
+    if university_id.isdigit() == False and len(university_id) != 10:
+        return jsonify({"status": "error", "message": "The university ID must be a valid number, with a length of 10 characters."}), 400
+
+    if session.get("user") is None:
+        return jsonify({"status": "error", "message": "You need to be authenticated to perform this action."}), 401
+    
+    if client["users"].find_one({"user_id": session["user"]["user_id"], "profile_complete": True}):
+        return jsonify({"status": "error", "message": "The user profile has already been completed, please check the profile page for more details."}), 409
+    
+    client["users"].find_one_and_update({"user_id": session["user"]["user_id"]}, {
+        "$set": {
+            "profile_complete": True,
+            "student_information.student_name": student_name.title(),
+            "student_information.student_email": student_email.lower(),
+            "student_information.student_university_id": university_id
+        }
+    })
+
+    return jsonify({"status": "success", "message": "The user profile has been completed successfully, you will be redirected to the home page."})
+
+@app.route("/api/v1/participations", methods=["POST"])
+def add_participation():
+    hackathon_id = request.form.get("hackathon_id")
+    position = request.form.get("position")
+    cost = request.form.get("cost")
+    certificate = request.files.get("certificate")
+
+    if not hackathon_id or not position or not cost or not certificate:
+        return jsonify({"status": "error", "message": f"Please, fill the following fields: {'Hackathon ID' if not hackathon_id else ''} {'Position Secured' if not position else ''} {'Cost of Participation' if not cost else ''} {'Certificate' if not certificate else ''} to submit the form."}), 400
+    
+    if session.get("user") is None:
+        return jsonify({"status": "error", "message": "You need to be authenticated to perform this action."}), 401
+    
+    if not certificate.filename.endswith(('.pdf', '.jpg', '.jpeg', '.png')):
+        return jsonify({"status": "error", "message": "The certificate file must be a valid PDF, JPG, JPEG, or PNG file."}), 400
+
+    if not cost.isdigit():
+        return jsonify({"status": "error", "message": "The cost of participation must be a valid number, without any currency symbols."}), 400
+    
+    if not client["hackathons"].find_one({"_id": ObjectId(hackathon_id)}):
+        return jsonify({"status": "error", "message": "No hackathon found with the provided ID, the hackathon may have been deleted or please check the ID and try again."}), 404
+    
+    if not client["users"].find_one({"user_id": session["user"]["user_id"], "profile_complete": True}):
+        return jsonify({"status": "error", "message": "The user profile is incomplete, please complete the profile to perform this action."}), 403
+
+    if client["participations"].find_one({"hackathon_id": hackathon_id, "user_id": session["user"]["user_id"]}):
+        return jsonify({"status": "error", "message": "You have already participated in the hackathon, please ensure that you have selected the correct hackathon."}), 409
+    
+    try:
+        certificate_upload_response = requests.post(f'https://api.cdn.om-mishra.com/v1/upload-file?authorization={os.getenv("CDN_AUTHORIZATION")}', files={"file": certificate}, data={"object_path": f"hackathons/participations/{uuid.uuid4()}.{certificate.filename.split('.')[-1]}"})
+        if certificate_upload_response.status_code == 413:
+            return jsonify({"status": "error", "message": "The certificate file is too large, please upload a file with a size less than 4MB."}), 413
+        if certificate_upload_response.status_code != 200:
+            return jsonify({"status": "error", "message": "An error occurred while uploading the certificate file, please try again later."}), 500
+        if certificate_upload_response.json()["status"] != "success":
+            return jsonify({"status": "error", "message": "An error occurred while uploading the certificate file, please try again later."}), 500
+        certificate_url = certificate_upload_response.json()["file_url"]
+    except Exception as e:
+        return jsonify({"status": "error", "message": "An error occurred while uploading the certificate file, please try again later."}), 500
+
+    points_awarded = calculate_points(position, hackathon_id)
+    
+    client["participations"].insert_one({
+        "hackathon_id": hackathon_id,
+        "user_id": session["user"]["user_id"],
+        "participation_metadata": {
+            "position_secured": position,
+            "cost_of_participation": cost,
+            "certificate_url": certificate_url,
+            "participation_date": datetime.now()
+        },
+        "points_awarded": points_awarded
+    })
+
+    return jsonify({"status": "success", "message": "The participation has been added successfully, the moderation team will review the participation."})
+
+
 # Error Handlers
 
 @app.errorhandler(404)
@@ -399,4 +549,4 @@ def internal_server_error(error):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5000)

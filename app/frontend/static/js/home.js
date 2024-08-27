@@ -1,8 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
   initializeSlashSearch();
+  checkAuthState();
 });
 
-let originalHackathons = document.getElementById('hackathons-container').innerHTML;
+let originalHackathons;
+
+if (document.getElementById('hackathons-container')) {
+    originalHackathons = document.getElementById('hackathons-container').innerHTML;
+}
 
 function initializeSlashSearch() {
   const searchInput = document.getElementById('search-input');
@@ -391,3 +396,152 @@ function reportHackathonFormSubmit(event) {
           document.getElementById('report-hackathon-error-message-container').style.display = 'block';
       });
 }
+
+function checkAuthState() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const authState = urlParams.get('authState');
+
+    if (authState === 'profile') {
+        document.getElementById('complete-profile-error-message').innerText = 'Please complete your profile, this helps us in tracking your progress and attributing the points to the right person for the hackathons you participate in.';
+    
+        if (document.getElementById('modals-container')) {
+            isModalsContainerOpen = document.getElementById('modals-container').classList.contains('open-modals-container');
+            if (isModalsContainerOpen) {
+                isCompleteProfileModalContainerOpen = document.getElementById('complete-profile-modal').classList.contains('open-modal-container');
+                if (isCompleteProfileModalContainerOpen) {
+                    return;
+                } else {
+                    document.getElementById('complete-profile-modal').classList.add('open-modal-container');
+                    document.getElementsByTagName('body')[0].style.overflow = 'hidden';
+                }
+            } else {
+                document.getElementById('modals-container').classList.add('open-modals-container');
+                document.getElementById('complete-profile-modal').classList.add('open-modal-container');
+                document.getElementsByTagName('body')[0].style.overflow = 'hidden';
+            }
+        }
+    }
+}
+
+function completeProfileFormSubmit(event) {
+    event.preventDefault();
+
+    const studentName = document.getElementById('complete-profile-name').value.trim();
+    const studentEmail = document.getElementById('complete-profile-email').value.trim();
+    const universityId = document.getElementById('complete-university_id').value.trim();
+
+    if (studentName.length === 0 || studentEmail.length === 0 || universityId.length === 0) {
+        document.getElementById('complete-profile-error-message').innerText = `Please, fill the following fields: ${studentName.length === 0 ? 'Student Name' : ''} ${studentEmail.length === 0 ? 'Email Address' : ''} ${universityId.length === 0 ? 'University Roll Number' : ''} to submit the form.`;
+        document.getElementById('complete-profile-error-message-container').style.display = 'block';
+        return;
+    }
+    
+    fetch('/api/v1/users/profile', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            student_name: studentName,
+            student_email: studentEmail,
+            university_id: universityId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            document.getElementById('complete-profile-error-message').style.color = 'green';
+            document.getElementById('complete-profile-error-message').innerText = data.message;
+            document.getElementById('complete-profile-error-message-container').style.display = 'block';
+            setTimeout(() => {
+                closeModal('complete-profile-modal');
+                window.location.href = '/';
+            }, 2000);
+        } else {
+            document.getElementById('complete-profile-error-message').innerText = data.message;
+            document.getElementById('complete-profile-error-message-container').style.display = 'block';
+        }
+    })
+    .catch(error => {
+        document.getElementById('complete-profile-error-message').innerText = 'There was an error while calling our servers, please try again later.';
+        document.getElementById('complete-profile-error-message-container').style.display = 'block';
+    });
+}
+
+
+function addParticipation() {
+    if (document.getElementById('add-participation-error-message').innerText !== `Please, authenticate yourself by logging in here, before adding a participation.This helps us in maintaining the integrity of the data, as well as in attributing the participation to the right person.`) {
+        document.getElementById('add-participation-error-message').innerText = '';
+    }
+    if (document.getElementById('modals-container')) {
+        isModalsContainerOpen = document.getElementById('modals-container').classList.contains('open-modals-container');
+        if (isModalsContainerOpen) {
+            isAddParticipationModalContainerOpen = document.getElementById('add-participation-modal').classList.contains('open-modal-container');
+            if (isAddParticipationModalContainerOpen) {
+                return;
+            } else {
+                document.getElementById('add-participation-modal').classList.add('open-modal-container');
+                document.getElementsByTagName('body')[0].style.overflow = 'hidden';
+            }
+        } else {
+            document.getElementById('modals-container').classList.add('open-modals-container');
+            document.getElementById('add-participation-modal').classList.add('open-modal-container');
+            document.getElementsByTagName('body')[0].style.overflow = 'hidden';
+        }
+    }
+}
+
+function addParticipationFormSubmit(event) {
+    event.preventDefault();
+
+    const hackathonId = document.getElementById('participation-hackathon-id').value.trim();
+    const position = document.getElementById('participation-position').value.trim();
+    const cost = document.getElementById('participation-cost').value.trim();
+    const certificate = document.getElementById('participation-certificate').files[0];
+
+    if (hackathonId.length === 0 || position.length === 0 || cost.length === 0 || !certificate) {
+        document.getElementById('add-participation-error-message').innerText = `Please, fill the following fields: ${hackathonId.length === 0 ? 'Hackathon Name' : ''} ${position.length === 0 ? 'Position Secured' : ''} ${prize.length === 0 ? 'Cost of Participation' : ''} ${!certificate ? 'Certificate' : ''} to submit the form.`;
+        document.getElementById('add-participation-error-message-container').style.display = 'block';
+        return;
+    }
+
+    document.getElementById('add-participation-error-message-container').style.display = 'none';
+
+    const formData = new FormData();
+    formData.append('hackathon_id', hackathonId);
+    formData.append('position', position);
+    formData.append('cost', cost);
+    formData.append('certificate', certificate);
+
+
+    document.getElementById('add-participation-error-message').style.color = '#green';
+    document.getElementById('add-participation-error-message').innerText = 'Uploading your certificate, please wait...';
+    document.getElementById('add-participation-error-message-container').style.display = 'block';
+
+    fetch('/api/v1/participations', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                document.getElementById('add-participation-error-message').style.color = 'green';
+                document.getElementById('add-participation-error-message').innerText = data.message;
+                document.getElementById('add-participation-error-message-container').style.display = 'block';
+                setTimeout(() => {
+                    closeModal('add-participation-modal');
+                    window.location.reload();
+                }, 2000);
+            } else {
+                document.getElementById('add-participation-error-message').style.color = '#FF0000';
+                document.getElementById('add-participation-error-message').innerText = data.message;
+                document.getElementById('add-participation-error-message-container').style.display = 'block';
+            }
+        })
+        .catch(error => {
+            document.getElementById('add-participation-error-message').style.color = '#FF0000';
+            document.getElementById('add-participation-error-message').innerText = 'There was an error while calling our servers, please try again later.';
+            document.getElementById('add-participation-error-message-container').style.display = 'block';
+        });
+}
+
