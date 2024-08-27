@@ -25,7 +25,7 @@
                 {% for user in (leaderboard) %}
                 <tr>
                     <td>{{ loop.index }}.</td>
-                    <td class="flex-td"><img src="{{ user['account_information']['avatar_url'] }}" alt="{{ user['account_information']['login'] }}"><a class="className" href="https://github.com/{{ user['account_information']['login'] }}" target="_blank">{{ user['account_information']['name'] }}</a></td>
+                    <td class="flex-td"><img src="{{ user['account_information']['avatar_url'] }}" alt="{{ user['account_information']['login'] }}"><a class="className" href="https://github.com/{{ user['account_information']['login'] }}" target="_blank">{{ user['student_information']['student_name'] }}</a></td>
                     <td>{{ user['points'] }}</td>
                     <td class="mobileHidden">{{ user['participations'] }}</td>
                     <td class="mobileHidden">{{ user['student_information']['student_university_id'] }}</td>
