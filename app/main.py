@@ -530,7 +530,7 @@ def add_participation():
         "points_awarded": points_awarded
     })
 
-    return jsonify({"status": "success", "message": "The participation has been added successfully, the moderation team will review the participation."})
+    return jsonify({"status": "success", "message": f"The participation has been added successfully, you have been awarded {points_awarded} reputation points."})
 
 
 # Error Handlers
@@ -546,4 +546,5 @@ def method_not_allowed(error):
 @app.errorhandler(500)
 def internal_server_error(error):
     return render_template("public/error.html", error_code=500, error_message="Oops! Something went wrong, please try again later.")
+
 
