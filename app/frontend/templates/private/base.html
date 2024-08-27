@@ -161,7 +161,7 @@
                         </select>
                         <label for="participation-cost">Cost of Participation (Individual)</label>
                         <p class="label-description">Please enter the cost of participation for an individual in the hackathon. If the hackathon was free, please enter 0, otherwise the cost in INR divided by the number of team members.</p>
-                        <input type="number" id="participation-cost" name="participation-cost" required>
+                        <input type="number" id="participation-cost" name="participation-cost" required value="0" min="0">
                         <label for="participation-certificate">Certificate</label>
                         <p class="label-description">Please upload a certificate of participation in the hackathon. This can be a screenshot of the certificate, or a PDF of the certificate.</p>
                         <input type="file" id="participation-certificate" name="participation-certificate" required accept=".png, .jpg, .jpeg, .pdf">
