@@ -3,4 +3,5 @@ requests
 flask
 pymongo
 redis
+flask-session
 gunicorn
