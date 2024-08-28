@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import requests
 from flask import Flask, redirect, request, render_template, session, jsonify, url_for
+from flask_session import Session
 from pymongo import MongoClient
 from bson import ObjectId
 
@@ -14,6 +15,16 @@ app = Flask(__name__, template_folder="frontend/templates", static_folder="front
 
 # Set the secret key to sign the session cookie
 app.secret_key = os.getenv("SECRET_KEY")
+
+# Set the session type to use the redis server
+app.config["SESSION_TYPE"] = "redis"
+app.config["SESSION_REDIS"] = os.getenv("REDIS_URI")
+app.config["SESSION_PERMANENT"] = True
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=365)
+app.config["SESSION_COOKIE_SECURE"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Strict"
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_NAME"] = "X-Session-Token"
 
 # Connect to the MongoDB database
 client = MongoClient(os.getenv("MONGODB_URI"))["production"]
