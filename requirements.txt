@@ -2,4 +2,5 @@ load_dotenv
 requests
 flask
 pymongo
+redis
 gunicorn
