@@ -474,7 +474,7 @@ def complete_profile():
     if "@" not in student_email:
         return jsonify({"status": "error", "message": "The email address provided is invalid, please check the email address and try again."}), 400
     
-    if university_id.isdigit() == False and len(university_id) != 10:
+    if university_id.isdigit() == False or len(university_id) != 10:
         return jsonify({"status": "error", "message": "The university ID must be a valid number, with a length of 10 characters."}), 400
 
     if session.get("user") is None:
