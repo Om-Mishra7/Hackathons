@@ -19,9 +19,10 @@ app.secret_key = os.getenv("SECRET_KEY")
 # Set the session type to use the redis server
 app.config["SESSION_TYPE"] = "redis"
 app.config["SESSION_REDIS"] = os.getenv("REDIS_URI")
-app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=365)
+app.config["SESSION_PERMANENT"] = True
+app.config["PERMANENT_SESSION_LIFETIME"] = '86400'
 app.config["SESSION_COOKIE_SECURE"] = True
-app.config["SESSION_COOKIE_SAMESITE"] = "Strict"
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_NAME"] = "X-Session-Token"
 
