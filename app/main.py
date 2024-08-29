@@ -13,7 +13,7 @@ import redis
 # Load the enviroment variables
 load_dotenv()
 
-redis_client = redis.Redis.from_url(os.getenv("REDIS_URL"))
+redis_client = redis.Redis.from_url(os.getenv("REDIS_URI"))
 
 app = Flask(__name__, template_folder="frontend/templates", static_folder="frontend/static")
 
