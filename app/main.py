@@ -7,6 +7,8 @@ from flask import Flask, redirect, request, render_template, session, jsonify, u
 from flask_session import Session
 from pymongo import MongoClient
 from bson import ObjectId
+import redis
+
 
 # Load the enviroment variables
 load_dotenv()
@@ -17,14 +19,17 @@ app = Flask(__name__, template_folder="frontend/templates", static_folder="front
 app.secret_key = os.getenv("SECRET_KEY")
 
 # Set the session type to use the redis server
-app.config["SESSION_TYPE"] = "redis"
+app.config["SESSION_TYPE"]  = "redis"
 app.config["SESSION_REDIS"] = os.getenv("REDIS_URI")
 app.config["SESSION_PERMANENT"] = True
-app.config["PERMANENT_SESSION_LIFETIME"] = '86400'
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=365)
 app.config["SESSION_COOKIE_SECURE"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 app.config["SESSION_COOKIE_HTTPONLY"] = True
-app.config["SESSION_COOKIE_NAME"] = "X-Session-Token"
+app.config["SESSION_COOKIE_NAME"] = "X-SID-Token"
+
+# Initialize the session
+Session(app) # Don't forget to initialize the session
 
 # Connect to the MongoDB database
 client = MongoClient(os.getenv("MONGODB_URI"))["production"]
@@ -559,3 +564,6 @@ def internal_server_error(error):
     return render_template("public/error.html", error_code=500, error_message="Oops! Something went wrong, please try again later.")
 
 
+
+if __name__ == "__main__":
+    app.run(host=0.0.0.0)
