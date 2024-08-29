@@ -13,6 +13,8 @@ import redis
 # Load the enviroment variables
 load_dotenv()
 
+redis_client = redis.Redis.from_url(os.getenv("REDIS_URL"))
+
 app = Flask(__name__, template_folder="frontend/templates", static_folder="frontend/static")
 
 # Set the secret key to sign the session cookie
@@ -20,7 +22,7 @@ app.secret_key = os.getenv("SECRET_KEY")
 
 # Set the session type to use the redis server
 app.config["SESSION_TYPE"]  = "redis"
-app.config["SESSION_REDIS"] = os.getenv("REDIS_URI")
+app.config["SESSION_REDIS"] = redis_client
 app.config["SESSION_PERMANENT"] = True
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=365)
 app.config["SESSION_COOKIE_SECURE"] = True
@@ -566,4 +568,4 @@ def internal_server_error(error):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(host='0.0.0.0')
